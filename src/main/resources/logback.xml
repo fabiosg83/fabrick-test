@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+    <conversionRule conversionWord="wex"
+                    converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+    <conversionRule conversionWord="wEx"
+                    converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
+
+    <property name="CONSOLE_LOG_PATTERN"
+              value="%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+
+    <property name="FILE_LOG_PATTERN"
+              value="%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%t] %-40.40logger{39} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+
+    <property name="SYSLOG_PATTERN" value="fabrick-test-api [%5level][%logger{0}:%line-%thread] - %message%n"/>
+
+    <property name="LOGS" value="./logs"/>
+
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>${CONSOLE_LOG_PATTERN}</Pattern>
+        </layout>
+    </appender>
+
+    <appender name="RollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS}/main.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>${FILE_LOG_PATTERN}</Pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS}/main-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>20</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="SysLog" class="ch.qos.logback.classic.net.SyslogAppender">
+        <syslogHost>localhost</syslogHost>
+        <facility>LOCAL2</facility>
+        <suffixPattern>${SYSLOG_PATTERN}</suffixPattern>
+    </appender>
+
+    <springProfile name="dev">
+        <root level="info">
+            <appender-ref ref="RollingFile"/>
+            <appender-ref ref="Console"/>
+        </root>
+    </springProfile>
+    <springProfile name="stage">
+        <root level="info">
+            <appender-ref ref="RollingFile"/>
+            <appender-ref ref="Console"/>
+        </root>
+    </springProfile>
+    <springProfile name="prod">
+        <root level="info">
+            <appender-ref ref="SysLog"/>
+            <appender-ref ref="Console"/>
+        </root>
+    </springProfile>
+
+</configuration>
