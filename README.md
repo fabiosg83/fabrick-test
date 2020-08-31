@@ -5,4 +5,4 @@ java -jar -Dlogback.configurationFile=classpath:logback.xml -Dspring.profiles.ac
 
 
 SWAGGER URL
-http://{domain}:{port}/swagger-ui.html [exampple: http://localhost:8888/swagger-ui.html]
+http://{domain}:{port}/swagger-ui.html [example: http://localhost:8888/swagger-ui.html]
